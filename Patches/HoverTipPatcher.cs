@@ -187,7 +187,7 @@ public static class HoverTipPatcher
         {
             if (!MailaConfig.ShowCardType) return;
             var tips = __result.ToList();
-            var title = __instance.Id.Entry;
+            var title = MailaConfig.ShowCardId ? __instance.Id.Entry : null;
             var description = FormatNameTip(__instance.GetType().FullName);
             var custom = CreateCustomTip(title, description);
             tips.Insert(0, custom);
@@ -205,7 +205,7 @@ public static class HoverTipPatcher
             if (!MailaConfig.ShowCreatureType) return;
             var tips = __result.ToList();
             object? model = !__instance.IsPlayer ? __instance.Monster : __instance.Player?.Character;
-            var title = __instance.ModelId.Entry;
+            var title = MailaConfig.ShowCreatureId ? __instance.ModelId.Entry : null;
             var description = FormatNameTip(model?.GetType().FullName);
             var custom = CreateCustomTip(title, description);
             tips.Insert(0, custom);

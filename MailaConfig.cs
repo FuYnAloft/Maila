@@ -13,7 +13,9 @@ public class MailaConfig : SimpleModConfig
 {
     public static MailaFontSize FontSize { get; set; } = MailaFontSize.Small;
     public static bool ShowCardType { get; set; } = true;
+    public static bool ShowCardId { get; set; } = false;
     public static bool ShowCreatureType { get; set; } = true;
+    public static bool ShowCreatureId { get; set; } = false;
 
     public static bool ShowKeywordType { get; set; } = true;
     public static bool ShowPowerType { get; set; } = true;
