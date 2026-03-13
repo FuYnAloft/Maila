@@ -50,7 +50,7 @@ public static class HoverTipPatcher
         }
     }
     
-    private static string FormatNameTip(object? name) => $"\n[color=#707070]{name}[/color]";
+    private static string FormatNameTip(object? name) => $"\n[font_size=16][color=#7f7f7f]{name}[/color][/font_size]";
 
     private static HoverTip CreateCustomTip(string? title, string? description)
     {
