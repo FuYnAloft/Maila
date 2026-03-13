@@ -5,6 +5,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 
 
 namespace FuYn.Maila.Patches;
@@ -47,7 +48,7 @@ public static class HoverTipPatcher
         }
     }
     
-    private static string FormatNameTip(object? name) => $"\n[color=#7f7f7f]{name}[/color]";
+    private static string FormatNameTip(object? name) => $"\n[color=#707070]{name}[/color]";
 
     [HarmonyPatch(typeof(HoverTipFactory), nameof(HoverTipFactory.FromKeyword))]
     public static class FromKeywordPatch
@@ -115,5 +116,26 @@ public static class HoverTipPatcher
         }
         // ReSharper restore InconsistentNaming
     }
-}
 
+    [HarmonyPatch(typeof(PowerModel), nameof(PowerModel.HoverTips), MethodType.Getter)]
+    public static class PowerModelHoverTipsPatch
+    {
+        // ReSharper disable InconsistentNaming
+        public static void Postfix(PowerModel __instance, ref IEnumerable<IHoverTip> __result)
+        {
+            AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
+        }
+        // ReSharper restore InconsistentNaming
+    }
+
+    [HarmonyPatch(typeof(AbstractIntent), nameof(AbstractIntent.GetHoverTip))]
+    public static class AbstractIntentPatch
+    {
+        // ReSharper disable InconsistentNaming
+        public static void Postfix(AbstractIntent __instance, ref HoverTip __result)
+        {
+            AppendText(ref __result, FormatNameTip(__instance.GetType().FullName));
+        }
+        // ReSharper restore InconsistentNaming
+    }
+}
