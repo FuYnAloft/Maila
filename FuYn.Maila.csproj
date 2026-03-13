@@ -58,7 +58,7 @@
             <Publicize>False</Publicize> <!--Allows private/protected field references but may cause errors.-->
         </Reference>
 
-        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All"/>
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="0.0.5" PrivateAssets="All"/>
         <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
         <AdditionalFiles Include="FuYn.Maila/localization/**/*.json"/>
     </ItemGroup>
@@ -89,7 +89,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include=".github\images\*.png" />
       <Content Include=".project-memory.md" />
+      <Content Include="README.md" />
     </ItemGroup>
 
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
