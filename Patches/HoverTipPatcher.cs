@@ -56,7 +56,7 @@ public static class HoverTipPatcher
     private static string FormatNameTip(string? name)
     {
         var whitespaced = name?.Replace(".", "\u200b.");
-        return $"[font_size={MailaConfig.FontSize}][color=#7f7f7f]{whitespaced}[/color][/font_size]";
+        return $"[font_size={(int)MailaConfig.FontSize}][color=#7f7f7f]{whitespaced}[/color][/font_size]";
     }
 
     private static HoverTip CreateCustomTip(string? title, string? description)

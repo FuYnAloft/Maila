@@ -6,7 +6,7 @@ public enum MailaFontSize
 {
     Small = 16,
     Medium = 20,
-    Normal = 24,
+    Big = 24,
 }
 
 public class MailaConfig : SimpleModConfig
