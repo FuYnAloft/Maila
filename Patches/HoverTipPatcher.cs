@@ -53,9 +53,10 @@ public static class HoverTipPatcher
         }
     }
 
-    private static string FormatNameTip(object? name)
+    private static string FormatNameTip(string? name)
     {
-        return $"[font_size={MailaConfig.FontSize}][color=#7f7f7f]{name}[/color][/font_size]";
+        var whitespaced = name?.Replace(".", "\u200b.");
+        return $"[font_size={MailaConfig.FontSize}][color=#7f7f7f]{whitespaced}[/color][/font_size]";
     }
 
     private static HoverTip CreateCustomTip(string? title, string? description)
