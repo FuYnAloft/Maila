@@ -138,4 +138,15 @@ public static class HoverTipPatcher
         }
         // ReSharper restore InconsistentNaming
     }
+
+    [HarmonyPatch(typeof(HoverTipFactory), nameof(HoverTipFactory.Static))]
+    public static class StaticHoverTipPatch
+    {
+        // ReSharper disable InconsistentNaming
+        public static void Postfix(StaticHoverTip tip, ref IHoverTip __result)
+        {
+            AppendTextToBoxed(ref __result, FormatNameTip("MegaCrit.Sts2.Core.HoverTips.StaticHoverTip." + tip));
+        }
+        // ReSharper restore InconsistentNaming
+    }
 }
