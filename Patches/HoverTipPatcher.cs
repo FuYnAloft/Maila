@@ -170,7 +170,7 @@ public static class HoverTipPatcher
         public static void Postfix(CardModel __instance, ref IEnumerable<IHoverTip> __result)
         {
             var tips = __result.ToList();
-            var custom = CreateCustomTip(null, FormatNameTip(__instance.GetType().FullName));
+            var custom = CreateCustomTip(null, FormatNameTip(__instance.GetType().FullName)[1..]);
             tips.Insert(0, custom);
             __result = tips;
         }
