@@ -46,6 +46,8 @@ public static class HoverTipPatcher
             list = tipList;
         }
     }
+    
+    private static string FormatNameTip(object? name) => $"\n[color=#7f7f7f]{name}[/color]";
 
     [HarmonyPatch(typeof(HoverTipFactory), nameof(HoverTipFactory.FromKeyword))]
     public static class FromKeywordPatch
@@ -54,7 +56,7 @@ public static class HoverTipPatcher
         public static void Postfix(CardKeyword keyword, ref IHoverTip __result)
         {
             string typeName = "MegaCrit.Sts2.Core.Entities.Cards.CardKeyword." + keyword;
-            AppendTextToBoxed(ref __result, $"\n[707070]{typeName}[-]");
+            AppendTextToBoxed(ref __result, FormatNameTip(typeName));
         }
         // ReSharper restore InconsistentNaming
     }
@@ -65,7 +67,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(PowerModel __instance, ref HoverTip __result)
         {
-            AppendText(ref __result, $"\n[707070]{__instance.GetType().FullName}[-]");
+            AppendText(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
     }
@@ -76,7 +78,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(RelicModel __instance, ref IEnumerable<IHoverTip> __result)
         {
-            AppendTextToFirstInList(ref __result, $"\n[707070]{__instance.GetType().FullName}[-]");
+            AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
     }
@@ -87,7 +89,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(PotionModel __instance, ref HoverTip __result)
         {
-            AppendText(ref __result, $"\n[707070]{__instance.GetType().FullName}[-]");
+            AppendText(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
     }
@@ -98,7 +100,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(AfflictionModel __instance, ref IEnumerable<IHoverTip> __result)
         {
-            AppendTextToFirstInList(ref __result, $"\n[707070]{__instance.GetType().FullName}[-]");
+            AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
     }
@@ -109,7 +111,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(EnchantmentModel __instance, ref IEnumerable<IHoverTip> __result)
         {
-            AppendTextToFirstInList(ref __result, $"\n[707070]{__instance.GetType().FullName}[-]");
+            AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
     }
