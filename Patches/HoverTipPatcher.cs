@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
@@ -13,7 +14,9 @@ namespace FuYn.Maila.Patches;
 public static class HoverTipPatcher
 {
     private static readonly FieldInfo TitleField = AccessTools.Field(typeof(HoverTip), "<Title>k__BackingField");
+
     private static readonly FieldInfo DescriptionField = AccessTools.Field(typeof(HoverTip), "<Description>k__BackingField");
+
     private static readonly FieldInfo IdField = AccessTools.Field(typeof(HoverTip), "<Id>k__BackingField");
 
     private static void AppendText(ref HoverTip tip, string text)
@@ -49,7 +52,7 @@ public static class HoverTipPatcher
             list = tipList;
         }
     }
-    
+
     private static string FormatNameTip(object? name) => $"\n[font_size=16][color=#7f7f7f]{name}[/color][/font_size]";
 
     private static HoverTip CreateCustomTip(string? title, string? description)
@@ -170,7 +173,25 @@ public static class HoverTipPatcher
         public static void Postfix(CardModel __instance, ref IEnumerable<IHoverTip> __result)
         {
             var tips = __result.ToList();
-            var custom = CreateCustomTip(null, FormatNameTip(__instance.GetType().FullName)[1..]);
+            var title = __instance.Id.Entry;
+            var description = FormatNameTip(__instance.GetType().FullName)[1..];
+            var custom = CreateCustomTip(null, description);
+            tips.Insert(0, custom);
+            __result = tips;
+        }
+        // ReSharper restore InconsistentNaming
+    }
+
+    [HarmonyPatch(typeof(Creature), nameof(Creature.HoverTips), MethodType.Getter)]
+    public static class CreatureHoverTipsPatch
+    {
+        // ReSharper disable InconsistentNaming
+        public static void Postfix(Creature __instance, ref IEnumerable<IHoverTip> __result)
+        {
+            var tips = __result.ToList();
+            var title = __instance.ModelId.Entry;
+            var description = FormatNameTip(__instance.GetType().FullName)[1..];
+            var custom = CreateCustomTip(null, description);
             tips.Insert(0, custom);
             __result = tips;
         }
