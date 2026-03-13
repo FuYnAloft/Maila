@@ -53,7 +53,10 @@ public static class HoverTipPatcher
         }
     }
 
-    private static string FormatNameTip(object? name) => $"[font_size=16][color=#7f7f7f]{name}[/color][/font_size]";
+    private static string FormatNameTip(object? name)
+    {
+        return $"[font_size={MailaConfig.FontSize}][color=#7f7f7f]{name}[/color][/font_size]";
+    }
 
     private static HoverTip CreateCustomTip(string? title, string? description)
     {
@@ -72,6 +75,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(CardKeyword keyword, ref IHoverTip __result)
         {
+            if (!MailaConfig.ShowKeywordType) return;
             string typeName = "MegaCrit.Sts2.Core.Entities.Cards.CardKeyword." + keyword;
             AppendTextToBoxed(ref __result, FormatNameTip(typeName));
         }
@@ -84,6 +88,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(PowerModel __instance, ref HoverTip __result)
         {
+            if (!MailaConfig.ShowPowerType) return;
             AppendText(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -95,6 +100,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(RelicModel __instance, ref IEnumerable<IHoverTip> __result)
         {
+            if (!MailaConfig.ShowRelicType) return;
             AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -106,6 +112,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(PotionModel __instance, ref HoverTip __result)
         {
+            if (!MailaConfig.ShowPotionType) return;
             AppendText(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -117,6 +124,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(AfflictionModel __instance, ref IEnumerable<IHoverTip> __result)
         {
+            if (!MailaConfig.ShowAfflictionType) return;
             AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -128,6 +136,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(EnchantmentModel __instance, ref IEnumerable<IHoverTip> __result)
         {
+            if (!MailaConfig.ShowEnchantmentType) return;
             AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -139,6 +148,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(PowerModel __instance, ref IEnumerable<IHoverTip> __result)
         {
+            if (!MailaConfig.ShowPowerType) return;
             AppendTextToFirstInList(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -150,6 +160,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(AbstractIntent __instance, ref HoverTip __result)
         {
+            if (!MailaConfig.ShowIntentType) return;
             AppendText(ref __result, FormatNameTip(__instance.GetType().FullName));
         }
         // ReSharper restore InconsistentNaming
@@ -161,6 +172,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(StaticHoverTip tip, ref IHoverTip __result)
         {
+            if (!MailaConfig.ShowStaticHoverTipType) return;
             AppendTextToBoxed(ref __result, FormatNameTip("MegaCrit.Sts2.Core.HoverTips.StaticHoverTip." + tip));
         }
         // ReSharper restore InconsistentNaming
@@ -172,6 +184,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(CardModel __instance, ref IEnumerable<IHoverTip> __result)
         {
+            if (!MailaConfig.ShowCardType) return;
             var tips = __result.ToList();
             var title = __instance.Id.Entry;
             var description = FormatNameTip(__instance.GetType().FullName);
@@ -188,6 +201,7 @@ public static class HoverTipPatcher
         // ReSharper disable InconsistentNaming
         public static void Postfix(Creature __instance, ref IEnumerable<IHoverTip> __result)
         {
+            if (!MailaConfig.ShowCreatureType) return;
             var tips = __result.ToList();
             object? model = !__instance.IsPlayer ? __instance.Monster : __instance.Player?.Character;
             var title = __instance.ModelId.Entry;
