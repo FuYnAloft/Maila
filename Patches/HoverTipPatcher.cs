@@ -24,7 +24,7 @@ public static class HoverTipPatcher
         object boxed = tip;
         string current = (string)DescriptionField.GetValue(boxed);
         if (current == null) current = "";
-        DescriptionField.SetValue(boxed, current + text);
+        DescriptionField.SetValue(boxed, $"{current}\n{text}");
         tip = (HoverTip)boxed;
     }
 
@@ -36,7 +36,7 @@ public static class HoverTipPatcher
             object boxed = tip;
             string current = (string)DescriptionField.GetValue(boxed);
             if (current == null) current = "";
-            DescriptionField.SetValue(boxed, current + text);
+            DescriptionField.SetValue(boxed, $"{current}\n{text}");
             tip = (IHoverTip)boxed;
         }
     }
@@ -53,7 +53,7 @@ public static class HoverTipPatcher
         }
     }
 
-    private static string FormatNameTip(object? name) => $"\n[font_size=16][color=#7f7f7f]{name}[/color][/font_size]";
+    private static string FormatNameTip(object? name) => $"[font_size=16][color=#7f7f7f]{name}[/color][/font_size]";
 
     private static HoverTip CreateCustomTip(string? title, string? description)
     {
@@ -174,8 +174,8 @@ public static class HoverTipPatcher
         {
             var tips = __result.ToList();
             var title = __instance.Id.Entry;
-            var description = FormatNameTip(__instance.GetType().FullName)[1..];
-            var custom = CreateCustomTip(null, description);
+            var description = FormatNameTip(__instance.GetType().FullName);
+            var custom = CreateCustomTip(title, description);
             tips.Insert(0, custom);
             __result = tips;
         }
@@ -189,9 +189,10 @@ public static class HoverTipPatcher
         public static void Postfix(Creature __instance, ref IEnumerable<IHoverTip> __result)
         {
             var tips = __result.ToList();
+            object? model = !__instance.IsPlayer ? __instance.Monster : __instance.Player?.Character;
             var title = __instance.ModelId.Entry;
-            var description = FormatNameTip(__instance.GetType().FullName)[1..];
-            var custom = CreateCustomTip(null, description);
+            var description = FormatNameTip(model?.GetType().FullName);
+            var custom = CreateCustomTip(title, description);
             tips.Insert(0, custom);
             __result = tips;
         }
