@@ -12,7 +12,9 @@ namespace FuYn.Maila.Patches;
 
 public static class HoverTipPatcher
 {
+    private static readonly FieldInfo TitleField = AccessTools.Field(typeof(HoverTip), "<Title>k__BackingField");
     private static readonly FieldInfo DescriptionField = AccessTools.Field(typeof(HoverTip), "<Description>k__BackingField");
+    private static readonly FieldInfo IdField = AccessTools.Field(typeof(HoverTip), "<Id>k__BackingField");
 
     private static void AppendText(ref HoverTip tip, string text)
     {
@@ -49,6 +51,17 @@ public static class HoverTipPatcher
     }
     
     private static string FormatNameTip(object? name) => $"\n[color=#707070]{name}[/color]";
+
+    private static HoverTip CreateCustomTip(string? title, string? description)
+    {
+        HoverTip tip = default;
+        object boxed = tip;
+        TitleField.SetValue(boxed, title);
+        DescriptionField.SetValue(boxed, description);
+        tip = (HoverTip)boxed;
+        tip.Id = "Maila.CustomTip." + title;
+        return tip;
+    }
 
     [HarmonyPatch(typeof(HoverTipFactory), nameof(HoverTipFactory.FromKeyword))]
     public static class FromKeywordPatch
@@ -146,6 +159,20 @@ public static class HoverTipPatcher
         public static void Postfix(StaticHoverTip tip, ref IHoverTip __result)
         {
             AppendTextToBoxed(ref __result, FormatNameTip("MegaCrit.Sts2.Core.HoverTips.StaticHoverTip." + tip));
+        }
+        // ReSharper restore InconsistentNaming
+    }
+
+    [HarmonyPatch(typeof(CardModel), nameof(CardModel.HoverTips), MethodType.Getter)]
+    public static class CardModelHoverTipsPatch
+    {
+        // ReSharper disable InconsistentNaming
+        public static void Postfix(CardModel __instance, ref IEnumerable<IHoverTip> __result)
+        {
+            var tips = __result.ToList();
+            var custom = CreateCustomTip(null, FormatNameTip(__instance.GetType().FullName));
+            tips.Insert(0, custom);
+            __result = tips;
         }
         // ReSharper restore InconsistentNaming
     }
