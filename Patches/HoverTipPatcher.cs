@@ -1,43 +1,38 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 
-
 namespace FuYn.Maila.Patches;
 
 public static class HoverTipPatcher
 {
-    private static readonly FieldInfo TitleField = AccessTools.Field(typeof(HoverTip), "<Title>k__BackingField");
+    // 1. 使用 StructFieldRefAccess 创建基于内存引用的委托
+    // 这比 FieldInfo.GetValue/SetValue 快数百倍，且完全不会产生 GC 垃圾 (零装箱)
+    private static readonly AccessTools.StructFieldRef<HoverTip, string?> TitleRef = 
+        AccessTools.StructFieldRefAccess<HoverTip, string?>("<Title>k__BackingField");
 
-    private static readonly FieldInfo DescriptionField = AccessTools.Field(typeof(HoverTip), "<Description>k__BackingField");
-
-    private static readonly FieldInfo IdField = AccessTools.Field(typeof(HoverTip), "<Id>k__BackingField");
+    private static readonly AccessTools.StructFieldRef<HoverTip, string?> DescriptionRef = 
+        AccessTools.StructFieldRefAccess<HoverTip, string?>("<Description>k__BackingField");
 
     private static void AppendText(ref HoverTip tip, string text)
     {
-        object boxed = tip;
-        string current = (string)DescriptionField.GetValue(boxed);
+        // 2. 直接通过 ref 委托读取和修改，就像操作普通公开字段一样
+        ref string? current = ref DescriptionRef(ref tip);
         if (current == null) current = "";
-        DescriptionField.SetValue(boxed, $"{current}\n{text}");
-        tip = (HoverTip)boxed;
+        
+        current = $"{current}\n{text}"; 
     }
 
     private static void AppendTextToBoxed(ref IHoverTip tip, string text)
     {
-        // Must check if it is exactly HoverTip or compatible struct
-        if (tip is HoverTip)
+        // 3. 利用 C# 自身的模式匹配进行安全的拆箱和装箱
+        if (tip is HoverTip hoverTip) // 隐式拆箱到本地变量
         {
-            object boxed = tip;
-            string current = (string)DescriptionField.GetValue(boxed);
-            if (current == null) current = "";
-            DescriptionField.SetValue(boxed, $"{current}\n{text}");
-            tip = (IHoverTip)boxed;
+            AppendText(ref hoverTip, text); // 调用高性能的 ref 修改
+            tip = hoverTip; // 将修改后的值重新装箱并赋回
         }
     }
 
@@ -59,14 +54,18 @@ public static class HoverTipPatcher
         return $"[font_size={(int)MailaConfig.FontSize}][color=#7f7f7f]{whitespaced}[/color][/font_size]";
     }
 
+    // 4. 重写 CreateCustomTip：代码更加清爽，性能极佳
     private static HoverTip CreateCustomTip(string? title, string? description)
     {
-        HoverTip tip = default;
-        object boxed = tip;
-        TitleField.SetValue(boxed, title);
-        DescriptionField.SetValue(boxed, description);
-        tip = (HoverTip)boxed;
-        tip.Id = "Maila.CustomTip." + title;
+        HoverTip tip = new HoverTip(); 
+        
+        // 使用 ref 委托绕过 private set 修改 Title 和 Description
+        TitleRef(ref tip) = title;
+        DescriptionRef(ref tip) = description;
+        
+        // 源码中 Id 是有 public setter 的，直接赋值即可，不需要反射！
+        tip.Id = "Maila.CustomTip." + title; 
+        
         return tip;
     }
 
