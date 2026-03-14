@@ -1,0 +1,11 @@
+{
+  "id": "FuYn.Maila",
+  "name":"MAILA (what Model Am I Looking At?)",
+  "author":"FuYn (FuYnAloft)",
+  "description":"Show fullname of the model you are pointing at, via hover tips.\n显示你正在指向的Model的全名，通过悬浮提示。",
+  "version":"v0.2.0",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies":["BaseLib"],
+  "affects_gameplay": true
+}

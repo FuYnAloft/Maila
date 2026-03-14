@@ -58,7 +58,7 @@
             <Publicize>False</Publicize> <!--Allows private/protected field references but may cause errors.-->
         </Reference>
 
-        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="0.0.5" PrivateAssets="All"/>
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="0.1.0" PrivateAssets="All"/>
         <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
         <AdditionalFiles Include="FuYn.Maila/localization/**/*.json"/>
     </ItemGroup>
@@ -91,6 +91,7 @@
     <ItemGroup>
       <Content Include=".github\images\*.png" />
       <Content Include=".project-memory.md" />
+      <Content Include="FuYn.Maila.json" />
       <Content Include="README.md" />
     </ItemGroup>
 
@@ -102,6 +103,7 @@
             <BaseLibFiles Include="packages/alchyr.sts2.baselib/**/lib/**/BaseLib.dll;packages/alchyr.sts2.baselib/**/Content/BaseLib.pck"/>
         </ItemGroup>
         <Copy SourceFiles="@(BaseLibFiles)" DestinationFolder="$(Sts2Path)/mods/"/>
+        <Copy SourceFiles="$(MSBuildProjectName).json" DestinationFolder="$(Sts2Path)/mods/$(MSBuildProjectName)/"/>
     </Target>
 
     <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
